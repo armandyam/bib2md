@@ -7,7 +7,7 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 
 1. Clone the repository:
     ```bash
-    git clone https://github.com/yourusername/bib2md.git
+    git clone https://github.com/armandyam/bib2md.git
     cd bib2md
     ```
 
