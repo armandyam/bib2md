@@ -1,6 +1,7 @@
 # BibTeX to Markdown Converter
 
-This repository contains a script that converts .bib files to markdown files using a Jinja2 template.
+This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful
+for generating sheets for personal website that uses [Academic pages](https://github.com/academicpages/academicpages.github.io).
 
 ## Installation
 
@@ -20,4 +21,5 @@ This repository contains a script that converts .bib files to markdown files usi
 To convert a .bib file to markdown:
 
 ```bash
-python script.py
+python bib2md.py
+```
