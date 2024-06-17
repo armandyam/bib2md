@@ -1,6 +1,5 @@
 
 ### requirements.txt
 
-```txt
 pybtex
 jinja2
