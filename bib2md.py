@@ -92,12 +92,11 @@ def bib2md(bibfile, templatefile):
     """
     logging.info(f"Converting .bib file {bibfile} to markdown using template {templatefile}")
     bibdata = parse_bib_file(bibfile)
-    print(bibdata)
     template, undeclared_variables = setup_jinja(templatefile)
     write_md(bibdata, template, undeclared_variables)
 
 def main():
-    bib2md(os.path.join('data', 'example.bib'), 'md_template.jinja2')
+    bib2md(os.path.join('data', 'S0898122123004170.bib'), 'md_template.jinja2')
 
 if __name__ == '__main__':
     main()
