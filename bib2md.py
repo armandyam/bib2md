@@ -1,6 +1,7 @@
 import collections
 import logging
 import os
+import argparse
 from pybtex.database import parse_file
 import jinja2
 from jinja2 import meta
@@ -52,10 +53,13 @@ def parse_bib_file(bibdata):
                 author_list.append(author_first_name + ' ' + author_last_name)
         bibdata_parsed[entry]['authors_list'] = ', '.join(author_list)
         bibdata_parsed[entry]['paper_file_name'] = bibdata_parsed[entry]['year']+'-'+bibdata_parsed[entry]['title'].replace(' ', '-')+'.md'
-        bibdata_parsed[entry]['date'] = bibdata_parsed[entry]['year']
+        # Ensure date is set
+        year = bibdata_parsed[entry].get('year', '2022')
+        month = bibdata_parsed[entry].get('month', '01')
+        bibdata_parsed[entry]['date'] = f"{year}-{month}-01"
     return bibdata_parsed
 
-def write_md(bibdata, template, undeclared_variables):
+def write_md(bibdata, template, undeclared_variables, include_abstract=False):
     """
     Write markdown files using the parsed bibliographic data and Jinja2 template.
     
@@ -63,6 +67,7 @@ def write_md(bibdata, template, undeclared_variables):
         bibdata (defaultdict): Parsed bibliographic data.
         template (Template): Jinja2 template object.
         undeclared_variables (set): Set of undeclared variables in the template.
+        include_abstract (bool): Flag to include abstract and download link in the markdown file.
     """
     logging.info("Writing markdown files from bibliographic data")
     output_folder = 'output'
@@ -76,27 +81,52 @@ def write_md(bibdata, template, undeclared_variables):
                 temp_undeclared_variables.remove(value)
         if len(temp_undeclared_variables) > 0:
             logging.warning(f"The following variables are not defined in the bib file: {temp_undeclared_variables}")
+        
+        template_data['permalink'] = bibdata[entry]['paper_file_name'].replace(".md", '')
+        # Handle abstract and download link
+        if not include_abstract:
+            template_data['paperurl'] = ''
+            template_data['excerpt'] = ''
+        else:
+            template_data['excerpt'] = template_data.get('abstract', '')
+            template_data['paperurl'] = template_data.get('url', '')
+        
         output_file = os.path.join(output_folder, bibdata[entry]['paper_file_name'])
         outputText = template.render(template_data)  # this is where to put args to the template renderer
         with open(output_file, "w") as text_file:
             text_file.write(outputText)
             logging.info(f"Markdown file written: {output_file}")
 
-def bib2md(bibfile, templatefile):
+def bib2md(bibfiles, templatefile, include_abstract=False):
     """
-    Convert a .bib file to markdown files using a Jinja2 template.
+    Convert .bib files to markdown files using a Jinja2 template.
     
     Args:
-        bibfile (str): The path to the .bib file.
+        bibfiles (list): List of paths to .bib files.
         templatefile (str): The path to the Jinja2 template file.
+        include_abstract (bool): Flag to include abstract and download link in the markdown file.
     """
-    logging.info(f"Converting .bib file {bibfile} to markdown using template {templatefile}")
-    bibdata = parse_bib_file(bibfile)
+    logging.info(f"Converting .bib files to markdown using template {templatefile}")
+    all_bibdata = collections.defaultdict(lambda: collections.defaultdict(dict))
+    for bibfile in bibfiles:
+        bibdata = parse_bib_file(bibfile)
+        all_bibdata.update(bibdata)
     template, undeclared_variables = setup_jinja(templatefile)
-    write_md(bibdata, template, undeclared_variables)
+    write_md(all_bibdata, template, undeclared_variables, include_abstract)
 
 def main():
-    bib2md(os.path.join('data', 'S0898122123004170.bib'), 'md_template.jinja2')
+    parser = argparse.ArgumentParser(description='Convert .bib files to markdown using a Jinja2 template.')
+    parser.add_argument('bibpath', type=str, help='Path to a .bib file or a directory containing .bib files')
+    parser.add_argument('--template', type=str, default='md_template.jinja2', help='Path to the Jinja2 template file')
+    parser.add_argument('--include_abstract', action='store_true', default=False, help='Include abstract and download link in the markdown file')
+    args = parser.parse_args()
+
+    if os.path.isdir(args.bibpath):
+        bibfiles = [os.path.join(args.bibpath, f) for f in os.listdir(args.bibpath) if f.endswith('.bib')]
+    else:
+        bibfiles = [args.bibpath]
+
+    bib2md(bibfiles, args.template, args.include_abstract)
 
 if __name__ == '__main__':
     main()
