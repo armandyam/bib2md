@@ -2,7 +2,8 @@ import unittest
 import collections
 import os
 import shutil
-from script import setup_jinja, parse_bib_file, write_md, bib2md
+import jinja2
+from bib2md import setup_jinja, parse_bib_file, write_md, bib2md
 
 class TestBibToMd(unittest.TestCase):
 
