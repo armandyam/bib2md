@@ -2,14 +2,15 @@ import collections
 import logging
 import os
 import argparse
-from pybtex.database import parse_file
+from typing import Tuple, List, Set, Union
+from pybtex.database import parse_file, BibliographyData
 import jinja2
-from jinja2 import meta
+from jinja2 import Template, meta
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
-def setup_jinja(templatefile):
+def setup_jinja(templatefile: str) -> Tuple[Template, Set[str]]:
     """
     Setup Jinja2 environment and parse the template file to find undeclared variables.
     
@@ -28,7 +29,7 @@ def setup_jinja(templatefile):
     undeclared_variables = meta.find_undeclared_variables(parsed_content)
     return template, undeclared_variables
 
-def parse_bib_file(bibdata):
+def parse_bib_file(bibdata: str) -> collections.defaultdict:
     """
     Parse the .bib file and structure the data.
     
@@ -52,14 +53,14 @@ def parse_bib_file(bibdata):
                 author_last_name = ' '.join(author.last_names)
                 author_list.append(author_first_name + ' ' + author_last_name)
         bibdata_parsed[entry]['authors_list'] = ', '.join(author_list)
-        bibdata_parsed[entry]['paper_file_name'] = bibdata_parsed[entry]['year']+'-'+bibdata_parsed[entry]['title'].replace(' ', '-')+'.md'
+        bibdata_parsed[entry]['paper_file_name'] = bibdata_parsed[entry]['year'] + '-' + bibdata_parsed[entry]['title'].replace(' ', '-') + '.md'
         # Ensure date is set
         year = bibdata_parsed[entry].get('year', '2022')
         month = bibdata_parsed[entry].get('month', '01')
         bibdata_parsed[entry]['date'] = f"{year}-{month}-01"
     return bibdata_parsed
 
-def write_md(bibdata, template, undeclared_variables, include_abstract=False):
+def write_md(bibdata: collections.defaultdict, template: Template, undeclared_variables: Set[str], include_abstract: bool = False) -> None:
     """
     Write markdown files using the parsed bibliographic data and Jinja2 template.
     
@@ -97,7 +98,7 @@ def write_md(bibdata, template, undeclared_variables, include_abstract=False):
             text_file.write(outputText)
             logging.info(f"Markdown file written: {output_file}")
 
-def bib2md(bibfiles, templatefile, include_abstract=False):
+def bib2md(bibfiles: List[str], templatefile: str, include_abstract: bool = False) -> None:
     """
     Convert .bib files to markdown files using a Jinja2 template.
     
@@ -114,7 +115,7 @@ def bib2md(bibfiles, templatefile, include_abstract=False):
     template, undeclared_variables = setup_jinja(templatefile)
     write_md(all_bibdata, template, undeclared_variables, include_abstract)
 
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(description='Convert .bib files to markdown using a Jinja2 template.')
     parser.add_argument('bibpath', type=str, help='Path to a .bib file or a directory containing .bib files')
     parser.add_argument('--template', type=str, default='md_template.jinja2', help='Path to the Jinja2 template file')
