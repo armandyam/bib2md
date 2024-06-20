@@ -6,13 +6,13 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 ## Installation
 
 1. Clone the repository:
-    ```bash
+    ```
     git clone https://github.com/armandyam/bib2md.git
     cd bib2md
     ```
 
 2. Install the required packages:
-    ```bash
+    ```
     pip install -r requirements.txt
     ```
 
@@ -21,26 +21,30 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 ### Converting a Single .bib File to Markdown
 
 To convert a single .bib file to markdown:
-    ```bash
+
+    ```
     python bib2md.py path/to/your.bib
     ```
 
 ### Converting All .bib Files in a Directory to Markdown
 
 To convert all .bib files in a directory:
-    ```bash
+
+    ```
     python bib2md.py path/to/your/directory
     ```
 
 ### Including Abstracts and Download Links
 
 To include abstracts and download links in the markdown files, add the `--include_abstract` flag:
-    ```bash
+
+    ```
     python bib2md.py path/to/your.bib --include_abstract
     ```
 
 ### Example Command
-    ```bash
+
+    ```
     python bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
     ```
 
