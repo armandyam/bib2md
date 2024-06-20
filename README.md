@@ -22,31 +22,31 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 
 To convert a single .bib file to markdown:
 
-    ```
-    python bib2md.py path/to/your.bib
-    ```
+```
+python bib2md.py path/to/your.bib
+```
 
 ### Converting All .bib Files in a Directory to Markdown
 
 To convert all .bib files in a directory:
 
-    ```
-    python bib2md.py path/to/your/directory
-    ```
+```
+python bib2md.py path/to/your/directory
+```
 
 ### Including Abstracts and Download Links
 
 To include abstracts and download links in the markdown files, add the `--include_abstract` flag:
 
-    ```
-    python bib2md.py path/to/your.bib --include_abstract
-    ```
+```
+python bib2md.py path/to/your.bib --include_abstract
+```
 
 ### Example Command
 
-    ```
-    python bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
-    ```
+```
+python bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
+```
 
 Ensure you have the .bib file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
 
