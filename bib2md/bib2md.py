@@ -24,7 +24,7 @@ def setup_jinja(templatefile: str) -> Tuple[Template, Set[str]]:
     """
     logging.info(f"Setting up Jinja2 environment for template: {templatefile}")
     # Load the template from the package resources
-    with resources.path('example_package.templates', templatefile) as template_path:
+    with resources.path('bib2md.templates', templatefile) as template_path:
         templateLoader = jinja2.FileSystemLoader(searchpath=template_path.parent)
         templateEnv = jinja2.Environment(loader=templateLoader)
         template = templateEnv.get_template(templatefile)
