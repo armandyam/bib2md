@@ -12,4 +12,9 @@ setup(
         'pybtex',
         'Jinja2',
     ],
+    entry_points={
+        'console_scripts': [
+            'bib2md=bib2md.bib2md:main',
+        ],
+    },
 )

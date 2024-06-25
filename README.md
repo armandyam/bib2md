@@ -23,7 +23,7 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 To convert a single .bib file to markdown:
 
 ```
-python bib2md.py path/to/your.bib
+bib2md path/to/your.bib
 ```
 
 ### Converting All .bib Files in a Directory to Markdown
@@ -31,7 +31,7 @@ python bib2md.py path/to/your.bib
 To convert all .bib files in a directory:
 
 ```
-python bib2md.py path/to/your/directory
+bib2md path/to/your/directory
 ```
 
 ### Including Abstracts and Download Links
@@ -39,22 +39,32 @@ python bib2md.py path/to/your/directory
 To include abstracts and download links in the markdown files, add the `--include_abstract` flag:
 
 ```
-python bib2md.py path/to/your.bib --include_abstract
+bib2md path/to/your.bib --include_abstract
 ```
 
 ### Example Command
 
 ```
-python bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
+bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
 ```
+
 
 Ensure you have the .bib file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
 
 ## Workflow for Academic Pages
 
-To use this script for your academic pages website:
+To use this package for your academic pages website:
 
-1. Generate the markdown files using the script as described above.
+1. Generate the markdown files using the package as described above.
 2. Move the generated markdown files from the `output` folder to your academic pages content folder (_publications).
 3. Commit and push the changes to your repository.
 4. Your academic pages website will now render the new publications based on the converted markdown files.
+
+## Programmatic Usage
+
+You can also use this package programmatically within your Python code:
+
+```python
+from bib2md.bib2md import convert_bib_files
+
+convert_bib_files("/path/to/your.bib", "md_template.jinja2", include_abstract=True)
