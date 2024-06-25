@@ -38,6 +38,7 @@ def setup_jinja(templatefile: str) -> Tuple[Template, Set[str]]:
 
     return template, undeclared_variables
 
+
 def parse_bib_file(bibdata: str) -> collections.defaultdict:
     """
     Parse the .bib file and structure the data.
@@ -68,6 +69,7 @@ def parse_bib_file(bibdata: str) -> collections.defaultdict:
         month = bibdata_parsed[entry].get('month', '01')
         bibdata_parsed[entry]['date'] = f"{year}-{month}-01"
     return bibdata_parsed
+
 
 def write_md(bibdata: collections.defaultdict, template: Template, undeclared_variables: Set[str], include_abstract: bool = False) -> None:
     """
@@ -107,6 +109,7 @@ def write_md(bibdata: collections.defaultdict, template: Template, undeclared_va
             text_file.write(outputText)
             logging.info(f"Markdown file written: {output_file}")
 
+
 def bib2md(bibfiles: List[str], templatefile: str, include_abstract: bool = False) -> None:
     """
     Convert .bib files to markdown files using a Jinja2 template.
@@ -124,19 +127,41 @@ def bib2md(bibfiles: List[str], templatefile: str, include_abstract: bool = Fals
     template, undeclared_variables = setup_jinja(templatefile)
     write_md(all_bibdata, template, undeclared_variables, include_abstract)
 
+
+def convert_bib_files(bibpath: str, template: str, include_abstract: bool) -> None:
+    """
+      Convert .bib files to markdown files using a Jinja2 template.
+
+      Args:
+          bibpath (str): Path to a .bib file or a directory containing .bib files.
+          template (str): The path to the Jinja2 template file.
+          include_abstract (bool): Flag to include abstract and download link in the markdown file.
+    """
+    if os.path.isdir(bibpath):
+        bibfiles = [os.path.join(bibpath, f) for f in os.listdir(bibpath) if f.endswith('.bib')]
+    else:
+        bibfiles = [bibpath]
+
+    # Assuming bib2md is another function in this module
+    bib2md(bibfiles, template, include_abstract)
+
+
 def main() -> None:
+    """
+    Main function to parse command-line arguments and convert .bib files to markdown.
+    """
     parser = argparse.ArgumentParser(description='Convert .bib files to markdown using a Jinja2 template.')
     parser.add_argument('bibpath', type=str, help='Path to a .bib file or a directory containing .bib files')
     parser.add_argument('--template', type=str, default='md_template.jinja2', help='Path to the Jinja2 template file')
-    parser.add_argument('--include_abstract', action='store_true', default=False, help='Include abstract and download link in the markdown file')
+    parser.add_argument('--include_abstract', action='store_true', default=False,
+                        help='Include abstract and download link in the markdown file')
     args = parser.parse_args()
 
-    if os.path.isdir(args.bibpath):
-        bibfiles = [os.path.join(args.bibpath, f) for f in os.listdir(args.bibpath) if f.endswith('.bib')]
-    else:
-        bibfiles = [args.bibpath]
+    logging.basicConfig(level=logging.INFO)
+    logging.info(f"Converting .bib files from {args.bibpath} using template {args.template}")
 
-    bib2md(bibfiles, args.template, args.include_abstract)
+    convert_bib_files(args.bibpath, args.template, args.include_abstract)
+
 
 if __name__ == '__main__':
     main()
