@@ -9,7 +9,7 @@ setup(
         'bib2md': ['templates/*.jinja2'],
     },
     install_requires=[
-        'pybtex'
+        'pybtex',
         'Jinja2',
     ],
 )
