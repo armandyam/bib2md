@@ -3,3 +3,4 @@
 
 pybtex
 jinja2
+importlib

@@ -6,28 +6,33 @@ from typing import Tuple, List, Set, Union
 from pybtex.database import parse_file, BibliographyData
 import jinja2
 from jinja2 import Template, meta
+import importlib.resources as resources
 
 # Setup logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
+
 def setup_jinja(templatefile: str) -> Tuple[Template, Set[str]]:
     """
     Setup Jinja2 environment and parse the template file to find undeclared variables.
-    
+
     Args:
         templatefile (str): The path to the Jinja2 template file.
-    
+
     Returns:
         tuple: A tuple containing the Jinja2 template and a set of undeclared variables.
     """
     logging.info(f"Setting up Jinja2 environment for template: {templatefile}")
-    templateLoader = jinja2.FileSystemLoader(searchpath="./templates")
-    templateEnv = jinja2.Environment(loader=templateLoader)
-    template = templateEnv.get_template(templatefile)
-    template_source = templateEnv.loader.get_source(templateEnv, templatefile)
-    parsed_content = templateEnv.parse(template_source)
-    undeclared_variables = meta.find_undeclared_variables(parsed_content)
-    return template, undeclared_variables
+    # Load the template from the package resources
+    with resources.path('example_package.templates', templatefile) as template_path:
+        templateLoader = jinja2.FileSystemLoader(searchpath=template_path.parent)
+        templateEnv = jinja2.Environment(loader=templateLoader)
+        template = templateEnv.get_template(templatefile)
+        with open(template_path) as f:
+            template_source = f.read()
+        parsed_content = templateEnv.parse(template_source)
+        undeclared_variables = meta.find_undeclared_variables(parsed_content)
+        return template, undeclared_variables
 
 def parse_bib_file(bibdata: str) -> collections.defaultdict:
     """
