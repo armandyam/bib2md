@@ -23,16 +23,20 @@ def setup_jinja(templatefile: str) -> Tuple[Template, Set[str]]:
         tuple: A tuple containing the Jinja2 template and a set of undeclared variables.
     """
     logging.info(f"Setting up Jinja2 environment for template: {templatefile}")
-    # Load the template from the package resources
-    with resources.path('bib2md.templates', templatefile) as template_path:
-        templateLoader = jinja2.FileSystemLoader(searchpath=template_path.parent)
-        templateEnv = jinja2.Environment(loader=templateLoader)
-        template = templateEnv.get_template(templatefile)
-        with open(template_path) as f:
-            template_source = f.read()
-        parsed_content = templateEnv.parse(template_source)
-        undeclared_variables = meta.find_undeclared_variables(parsed_content)
-        return template, undeclared_variables
+
+    # Read the template file from the package resources
+    template_content = resources.read_text('bib2md.templates', templatefile)
+
+    # Set up Jinja2 environment
+    templateLoader = jinja2.DictLoader({'template': template_content})
+    templateEnv = jinja2.Environment(loader=templateLoader)
+    template = templateEnv.get_template('template')
+
+    # Parse the template to find undeclared variables
+    parsed_content = templateEnv.parse(template_content)
+    undeclared_variables = meta.find_undeclared_variables(parsed_content)
+
+    return template, undeclared_variables
 
 def parse_bib_file(bibdata: str) -> collections.defaultdict:
     """
