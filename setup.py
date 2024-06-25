@@ -9,9 +9,9 @@ setup(
     },
     packages=find_packages(),
     install_requires=[
-        'pybtex'
-        'jinja2'
-        'importlib'
+        'pybtex',
+        'jinja2',
+        'importlib',
         # List any third-party packages required by your package here
     ],
 )
