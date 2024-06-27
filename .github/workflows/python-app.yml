@@ -20,7 +20,15 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
+        pip install .
 
-    - name: Run tests
+    - name: Run unit tests
       run: |
         python -m unittest discover tests
+
+    - name: Run command line tool
+      run: |
+        mkdir -p output
+        bib2md data/example.bib --template templates/md_template.jinja2 --output output --include_abstract
+        # Verify the output
+        test -f output/2024-An-Innovative-Approach-to-Synthetic-Data-Generation.md
