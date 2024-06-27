@@ -1,7 +1,8 @@
+
 # BibTeX to Markdown Converter
 
 This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful
-for generating sheets for personal website that uses [Academic pages](https://github.com/academicpages/academicpages.github.io).
+for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io).
 
 ## Installation
 
@@ -11,9 +12,10 @@ for generating sheets for personal website that uses [Academic pages](https://gi
     cd bib2md
     ```
 
-2. Install the required packages:
+2. Install the required packages and the package itself:
     ```
     pip install -r requirements.txt
+    pip install .
     ```
 
 ## Usage
@@ -23,7 +25,7 @@ for generating sheets for personal website that uses [Academic pages](https://gi
 To convert a single .bib file to markdown:
 
 ```
-bib2md path/to/your.bib
+bib2md path/to/your.bib --template path/to/md_template.jinja2 --output path/to/output
 ```
 
 ### Converting All .bib Files in a Directory to Markdown
@@ -31,7 +33,7 @@ bib2md path/to/your.bib
 To convert all .bib files in a directory:
 
 ```
-bib2md path/to/your/directory
+bib2md path/to/your/directory --template path/to/md_template.jinja2 --output path/to/output
 ```
 
 ### Including Abstracts and Download Links
@@ -39,17 +41,16 @@ bib2md path/to/your/directory
 To include abstracts and download links in the markdown files, add the `--include_abstract` flag:
 
 ```
-bib2md path/to/your.bib --include_abstract
+bib2md path/to/your.bib --template path/to/md_template.jinja2 --output path/to/output --include_abstract
 ```
 
 ### Example Command
 
 ```
-bib2md.py data/example.bib --template md_template.jinja2 --include_abstract
+bib2md data/example.bib --template templates/md_template.jinja2 --output output --include_abstract
 ```
 
-
-Ensure you have the .bib file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
+Ensure you have the `.bib` file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
 
 ## Workflow for Academic Pages
 
@@ -65,6 +66,15 @@ To use this package for your academic pages website:
 You can also use this package programmatically within your Python code:
 
 ```python
-from bib2md.bib2md import convert_bib_files
+from bib2md.bib2md import process_bib_files
 
-convert_bib_files("/path/to/your.bib", "md_template.jinja2", include_abstract=True)
+process_bib_files("/path/to/your.bib", "/path/to/jinja/template/md_template.jinja2", "path/to/output", include_abstract=True)
+```
+
+## Running Tests
+
+To run the unit tests, use the following command:
+
+```bash
+python -m unittest discover tests
+```
