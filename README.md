@@ -1,6 +1,8 @@
 
 # BibTeX to Markdown Converter
 
+[![bib2md](https://github.com/armandyam/bib2md/actions/workflows/python-app.yml/badge.svg)](https://github.com/armandyam/bib2md/actions/workflows/python-app.yml)
+
 This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io).
 
 ## Installation
