@@ -10,7 +10,7 @@ setup(
     ],
     entry_points={
         'console_scripts': [
-            'bib2md=bib2md.bib2md:main', 'bib2md=bib2md.concatinate_bib:main'
+            'bib2md=bib2md.bib2md:main', 'bib2md=bib2md.concatenate_bib:main'
         ],
     },
 )

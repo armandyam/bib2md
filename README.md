@@ -99,7 +99,7 @@ python -m unittest discover tests
 You can also concatenate `.bib` files programmatically within your Python code:
 
 ```python
-from bib2md.concatbib import concatenate_bib_files
+from bib2md.concatenate_bib import concatenate_bib_files
 
 concatenate_bib_files("/path/to/your/directory", "/path/to/output/combined.bib")
 ```
