@@ -15,7 +15,7 @@ def concatenate_bib_files(folder_path: str, output_file: str) -> None:
     """
     # Ensure the output directory exists
     output_dir = os.path.dirname(output_file)
-    if not os.path.exists(output_dir):
+    if not os.path.exists(output_dir) and output_dir:
         os.makedirs(output_dir)
         logging.info(f"Created output directory {output_dir}")
 
