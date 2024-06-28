@@ -1,8 +1,7 @@
 
 # BibTeX to Markdown Converter
 
-This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful
-for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io).
+This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io).
 
 ## Installation
 
@@ -52,6 +51,22 @@ bib2md data/example.bib --template templates/md_template.jinja2 --output output 
 
 Ensure you have the `.bib` file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
 
+### Concatenating Multiple .bib Files
+
+To concatenate all `.bib` files in a directory into a single `.bib` file:
+
+```
+concatbib path/to/your/directory --output path/to/output/combined.bib
+```
+
+### Example Command
+
+```
+concatbib data/bib_files --output output/combined.bib
+```
+
+Ensure you have the `.bib` files in the `data/bib_files` directory. The combined `.bib` file will be generated at the specified output path.
+
 ## Workflow for Academic Pages
 
 To use this package for your academic pages website:
@@ -77,4 +92,14 @@ To run the unit tests, use the following command:
 
 ```bash
 python -m unittest discover tests
+```
+
+## Concatenate .bib Files Programmatically
+
+You can also concatenate `.bib` files programmatically within your Python code:
+
+```python
+from bib2md.concatbib import concatenate_bib_files
+
+concatenate_bib_files("/path/to/your/directory", "/path/to/output/combined.bib")
 ```

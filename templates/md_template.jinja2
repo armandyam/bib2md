@@ -4,12 +4,18 @@ collection: publications
 permalink: /publication/{{ permalink }}
 excerpt: '{{ excerpt }}'
 date: {{ date }}
-venue: '{{ journal }}'
-paperurl: '{{ paperurl }}'
-citation: '{{ authors_list}}. ({{ year }}). &quot;{{ title }}.&quot; <i>{{ journal }}</i>. {{ year }}, {{ volume }}({{ number }}), {{ article_number }}.'
+venue: '{% if journal is defined %}{{ journal }}{% elif booktitle is defined %}{{ booktitle }}{% endif %}'
+paperurl: '{% if paperurl is defined %}{{ paperurl }}{% endif %}'
+citation: '{% if authors_list is defined %}{{ authors_list }}{% endif %}.
+{% if year is defined %}({{ year }}).{% endif %}
+{% if title is defined %}&quot;{{ title }}.&quot;{% endif %}
+{% if journal is defined %}<i>{{ journal }}</i>{% elif booktitle is defined %}<i>{{ booktitle }}</i>{% if year is defined %}, {{ year }}{% endif %}{% if volume is defined %}, {{ volume }}{% endif %}{% if number is defined %}({{ number }}){% endif %}{% if article_number is defined %}, {{ article_number }}{% endif %}.{% endif %}'
 ---
 {{ abstract }}
 
-[Download paper here]({{ url }})
+[Download paper here]({% if url is defined %}{{ url }}{% endif %})
 
-Recommended citation: {{ authors_list}}. ({{ year }}). &quot;{{ title }}.&quot; <i>{{ journal }}</i>. {{ year }}, {{ volume }}({{ number }}), {{ article_number }}.
+Recommended citation: {% if authors_list is defined %}{{ authors_list }}{% endif %}.
+{% if year is defined %}({{ year }}).{% endif %}
+{% if title is defined %}&quot;{{ title }}.&quot;{% endif %}
+{% if journal is defined %}<i>{{ journal }}</i>{% elif booktitle is defined %}<i>{{ booktitle }}</i>{% if year is defined %}, {{ year }}{% endif %}{% if volume is defined %}, {{ volume }}{% endif %}{% if number is defined %}({{ number }}){% endif %}{% if article_number is defined %}, {{ article_number }}{% endif %}.{% endif %}
