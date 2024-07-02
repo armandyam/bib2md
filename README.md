@@ -105,3 +105,8 @@ from bib2md.concatenate_bib import concatenate_bib_files
 
 concatenate_bib_files("/path/to/your/directory", "/path/to/output/combined.bib")
 ```
+
+## Contributions
+
+[Jeyashree Krishnan](https://github.com/krishnanj) contributed to this repository.
+
