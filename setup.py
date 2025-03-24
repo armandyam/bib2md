@@ -7,10 +7,12 @@ setup(
     install_requires=[
         'pybtex',
         'Jinja2',
+        'rispy',
     ],
     entry_points={
         'console_scripts': [
-            'bib2md=bib2md.bib2md:main', 'concatenate_bib=bib2md.concatenate_bib:main'
+            'bib2md=bib2md.bib2md:main',
+            'concatbib=bib2md.concatenate_bib:main'
         ],
     },
 )

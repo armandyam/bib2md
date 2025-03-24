@@ -1,9 +1,8 @@
-
 # BibTeX to Markdown Converter
 
 [![bib2md](https://github.com/armandyam/bib2md/actions/workflows/python-app.yml/badge.svg)](https://github.com/armandyam/bib2md/actions/workflows/python-app.yml)
 
-This repository contains a script that converts .bib files to markdown files using a Jinja2 template. This is useful for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io).
+This repository contains a script that converts .bib and .ris files to markdown files using a Jinja2 template. This is useful for generating sheets for personal websites that use [Academic pages](https://github.com/academicpages/academicpages.github.io). It can also generate an HTML list of all publications from reference files.
 
 ## Installation
 
@@ -21,17 +20,17 @@ This repository contains a script that converts .bib files to markdown files usi
 
 ## Usage
 
-### Converting a Single .bib File to Markdown
+### Converting Reference Files to Markdown
 
-To convert a single .bib file to markdown:
+To convert reference files (.bib or .ris) to markdown:
 
 ```
-bib2md path/to/your.bib --template path/to/md_template.jinja2 --output path/to/output
+bib2md path/to/your_file --template path/to/md_template.jinja2 --output path/to/output
 ```
 
-### Converting All .bib Files in a Directory to Markdown
+### Converting All Reference Files in a Directory to Markdown
 
-To convert all .bib files in a directory:
+To convert all reference files (.bib and .ris) in a directory:
 
 ```
 bib2md path/to/your/directory --template path/to/md_template.jinja2 --output path/to/output
@@ -42,32 +41,71 @@ bib2md path/to/your/directory --template path/to/md_template.jinja2 --output pat
 To include abstracts and download links in the markdown files, add the `--include_abstract` flag:
 
 ```
-bib2md path/to/your.bib --template path/to/md_template.jinja2 --output path/to/output --include_abstract
+bib2md path/to/your_file --template path/to/md_template.jinja2 --output path/to/output --include_abstract
+```
+
+### Generating an HTML List of Papers
+
+To generate an HTML file containing a list of all papers from the reference files:
+
+```
+bib2md path/to/your/directory --template path/to/md_template.jinja2 --output path/to/output --html_template path/to/html_template.jinja2 --html_output path/to/output/papers.html
+```
+
+### Creating a Combined BibTeX File (Including Converted RIS Files)
+
+To convert all RIS files to BibTeX format and combine them with BibTeX files into a single BibTeX file:
+
+```
+bib2md path/to/your/directory --template path/to/md_template.jinja2 --output path/to/output --combined_bib path/to/output/publications.bib
+```
+
+### Complete Example Command
+
+```
+bib2md data/ --template templates/md_template.jinja2 --output output/ --include_abstract --html_template templates/html_papers_list.jinja2 --html_output output/papers.html --combined_bib output/publications.bib --combined_ris output/publications.ris
+```
+
+This command will:
+1. Convert all BIB and RIS files in the 'data/' directory to markdown files in the 'output/' directory
+2. Include abstracts and download links in the markdown files
+3. Generate an HTML list of papers at 'output/papers.html'
+4. Create a combined BibTeX file (with converted RIS entries) at 'output/publications.bib'
+5. Create a combined RIS file at 'output/publications.ris'
+
+Ensure you have the reference file(s) (.bib and/or .ris) in the specified path and the Jinja2 templates in their respective paths.
+
+### Concatenating Multiple Reference Files
+
+There are several options for concatenating reference files:
+
+```
+# BibTeX only (original files)
+concatbib data/ --output_bib output/combined.bib
+
+# RIS only (original files)
+concatbib data/ --output_ris output/combined.ris
+
+# Both formats (original files)
+concatbib data/ --output_bib output/combined.bib --output_ris output/combined.ris
+
+# Convert RIS to BibTeX and combine all into a single BibTeX file
+concatbib data/ --all_to_bib output/publications.bib
+```
+
+For backward compatibility, the following is also supported:
+
+```
+concatbib data/ --output output/combined.bib
 ```
 
 ### Example Command
 
 ```
-bib2md data/example.bib --template templates/md_template.jinja2 --output output --include_abstract
+concatbib data/ --output_bib output/combined.bib --output_ris output/combined.ris
 ```
 
-Ensure you have the `.bib` file(s) in the `data` directory and the Jinja2 template (optional argument) in the `templates` directory. Markdown files will be generated in the `output` folder.
-
-### Concatenating Multiple .bib Files
-
-To concatenate all `.bib` files in a directory into a single `.bib` file:
-
-```
-concatbib path/to/your/directory --output path/to/output/combined.bib
-```
-
-### Example Command
-
-```
-concatbib data/bib_files --output output/combined.bib
-```
-
-Ensure you have the `.bib` files in the `data/bib_files` directory. The combined `.bib` file will be generated at the specified output path.
+Ensure you have the reference files in the specified directory. The combined files will be generated at the specified output paths.
 
 ## Workflow for Academic Pages
 
@@ -83,9 +121,70 @@ To use this package for your academic pages website:
 You can also use this package programmatically within your Python code:
 
 ```python
-from bib2md.bib2md import process_bib_files
+from bib2md.bib2md import process_reference_files
 
-process_bib_files("/path/to/your.bib", "/path/to/jinja/template/md_template.jinja2", "path/to/output", include_abstract=True)
+# Basic usage to convert reference files to markdown
+process_reference_files(
+    "/path/to/your/directory", 
+    "/path/to/jinja/template/md_template.jinja2", 
+    "path/to/output", 
+    include_abstract=True
+)
+
+# Generate markdown files and an HTML paper list
+process_reference_files(
+    "/path/to/your/directory", 
+    "/path/to/jinja/template/md_template.jinja2", 
+    "path/to/output", 
+    include_abstract=True,
+    html_template_path="/path/to/jinja/template/html_papers_list.jinja2",
+    html_output="path/to/output/papers.html"
+)
+
+# Generate markdown files, HTML paper list, and combined BibTeX file
+process_reference_files(
+    "/path/to/your/directory", 
+    "/path/to/jinja/template/md_template.jinja2", 
+    "path/to/output", 
+    include_abstract=True,
+    html_template_path="/path/to/jinja/template/html_papers_list.jinja2",
+    html_output="path/to/output/papers.html",
+    combined_bib="path/to/output/publications.bib",
+    combined_ris="path/to/output/publications.ris"
+)
+```
+
+## Concatenate Reference Files Programmatically
+
+You can also concatenate reference files programmatically within your Python code:
+
+```python
+from bib2md.concatenate_bib import concatenate_reference_files
+
+# Concatenate both BibTeX and RIS files (separate files)
+concatenate_reference_files(
+    "/path/to/your/directory", 
+    output_bib="/path/to/output/combined.bib",
+    output_ris="/path/to/output/combined.ris"
+)
+
+# Concatenate BibTeX files only
+concatenate_reference_files(
+    "/path/to/your/directory", 
+    output_bib="/path/to/output/combined.bib"
+)
+
+# Concatenate RIS files only
+concatenate_reference_files(
+    "/path/to/your/directory", 
+    output_ris="/path/to/output/combined.ris"
+)
+
+# Convert RIS to BibTeX and combine all in one BibTeX file
+concatenate_reference_files(
+    "/path/to/your/directory", 
+    all_to_bib="/path/to/output/publications.bib"
+)
 ```
 
 ## Running Tests
@@ -94,16 +193,6 @@ To run the unit tests, use the following command:
 
 ```bash
 python -m unittest discover tests
-```
-
-## Concatenate .bib Files Programmatically
-
-You can also concatenate `.bib` files programmatically within your Python code:
-
-```python
-from bib2md.concatenate_bib import concatenate_bib_files
-
-concatenate_bib_files("/path/to/your/directory", "/path/to/output/combined.bib")
 ```
 
 ## Contributions
