@@ -104,9 +104,11 @@ def parse_ris_file(ris_file_path: str) -> collections.defaultdict:
         converted_authors = []
         for author in author_list:
             if ',' in author:
-                # Convert "last name, first name" format to "first name last name"
-                last_name, first_name = [part.strip() for part in author.split(',', 1)]
-                converted_authors.append(f"{first_name} {last_name}")
+                # Convert "last name, first name middle" format to "first name middle last name"
+                parts = [part.strip() for part in author.split(',', 1)]
+                last_name = parts[0]
+                first_and_middle = parts[1]
+                converted_authors.append(f"{first_and_middle} {last_name}")
             else:
                 converted_authors.append(author.strip())
                 

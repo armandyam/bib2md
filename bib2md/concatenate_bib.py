@@ -1,6 +1,7 @@
 import os
 import argparse
 import logging
+import re
 from pybtex.database import parse_file, BibliographyData
 
 # Setup logging
@@ -57,6 +58,7 @@ def concatenate_all_to_bib(folder_path: str, output_file: str) -> None:
 
     # Combined BibTeX content
     combined_bibtex = ""
+    seen_titles = set()
 
     # Process BibTeX files
     for bib_file in bib_files:
@@ -64,7 +66,20 @@ def concatenate_all_to_bib(folder_path: str, output_file: str) -> None:
         try:
             with open(file_path, 'r') as f:
                 content = f.read()
-                combined_bibtex += content + "\n\n"
+                # Parse the content to check for duplicates
+                entries = content.split('\n\n')
+                for entry in entries:
+                    if not entry.strip():
+                        continue
+                    # Extract title from entry
+                    title_match = re.search(r'title\s*=\s*{([^}]+)}', entry)
+                    if title_match:
+                        title = title_match.group(1).lower()
+                        if title not in seen_titles:
+                            seen_titles.add(title)
+                            combined_bibtex += entry + "\n\n"
+                    else:
+                        combined_bibtex += entry + "\n\n"
         except Exception as e:
             logging.error(f"Error processing BibTeX file {file_path}: {str(e)}")
 
@@ -74,7 +89,7 @@ def concatenate_all_to_bib(folder_path: str, output_file: str) -> None:
             from .rispy_handler import convert_ris_file_to_bibtex
         except ImportError:
             # Fall back to direct import when running as script
-            from bib2md.rispy_handler import convert_ris_file_to_bibtex
+            from rispy_handler import convert_ris_file_to_bibtex
             
         for ris_file in ris_files:
             file_path = os.path.join(folder_path, ris_file)
@@ -82,7 +97,20 @@ def concatenate_all_to_bib(folder_path: str, output_file: str) -> None:
                 # Convert RIS to BibTeX
                 bibtex_content = convert_ris_file_to_bibtex(file_path)
                 if bibtex_content:
-                    combined_bibtex += bibtex_content + "\n\n"
+                    # Parse the content to check for duplicates
+                    entries = bibtex_content.split('\n\n')
+                    for entry in entries:
+                        if not entry.strip():
+                            continue
+                        # Extract title from entry
+                        title_match = re.search(r'title\s*=\s*{([^}]+)}', entry)
+                        if title_match:
+                            title = title_match.group(1).lower()
+                            if title not in seen_titles:
+                                seen_titles.add(title)
+                                combined_bibtex += entry + "\n\n"
+                        else:
+                            combined_bibtex += entry + "\n\n"
             except Exception as e:
                 logging.error(f"Error converting RIS file {file_path}: {str(e)}")
 

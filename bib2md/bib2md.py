@@ -197,7 +197,7 @@ def parse_ris_file(ris_file_path: str) -> collections.defaultdict:
         from .rispy_handler import parse_ris_file as parse_ris
     except ImportError:
         # Fall back to direct import when running as script
-        from bib2md.rispy_handler import parse_ris_file as parse_ris
+        from rispy_handler import parse_ris_file as parse_ris
     return parse_ris(ris_file_path)
 
 
@@ -343,7 +343,7 @@ def process_reference_files(ref_path: str, md_template_path: str, output_folder:
             from .concatenate_bib import concatenate_all_to_bib
         except ImportError:
             # Fall back to direct import when running as script
-            from bib2md.concatenate_bib import concatenate_all_to_bib
+            from concatenate_bib import concatenate_all_to_bib
         if os.path.isdir(ref_path):
             concatenate_all_to_bib(ref_path, combined_bib)
         else:
@@ -357,7 +357,7 @@ def process_reference_files(ref_path: str, md_template_path: str, output_folder:
             from .rispy_handler import concatenate_ris_files
         except ImportError:
             # Fall back to direct import when running as script
-            from bib2md.rispy_handler import concatenate_ris_files
+            from rispy_handler import concatenate_ris_files
         if os.path.isdir(ref_path):
             concatenate_ris_files(ref_path, combined_ris)
         else:
@@ -377,7 +377,16 @@ def process_reference_files(ref_path: str, md_template_path: str, output_folder:
         # Parse all .ris files
         for ris_file in ris_files:
             ris_data = parse_ris_file(ris_file)
-            all_ref_data.update(ris_data)
+            # Check for duplicates based on title before updating
+            for entry_id, entry_data in ris_data.items():
+                title = entry_data.get('title', '').lower()
+                is_duplicate = False
+                for existing_id, existing_data in all_ref_data.items():
+                    if existing_data.get('title', '').lower() == title:
+                        is_duplicate = True
+                        break
+                if not is_duplicate:
+                    all_ref_data[entry_id] = entry_data
         
         # Generate HTML paper list
         generate_html_papers_list(list(all_ref_data.values()), html_template_path, html_output, combined_bib, combined_ris)
