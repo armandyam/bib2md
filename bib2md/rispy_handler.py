@@ -100,7 +100,17 @@ def parse_ris_file(ris_file_path: str) -> collections.defaultdict:
         elif 'first_authors' in entry:
             author_list = entry['first_authors']
             
-        ris_data_parsed[entry_id]['authors_list'] = ', '.join(author_list)
+        # Convert author names to standard format
+        converted_authors = []
+        for author in author_list:
+            if ',' in author:
+                # Convert "last name, first name" format to "first name last name"
+                last_name, first_name = [part.strip() for part in author.split(',', 1)]
+                converted_authors.append(f"{first_name} {last_name}")
+            else:
+                converted_authors.append(author.strip())
+                
+        ris_data_parsed[entry_id]['authors_list'] = ', '.join(converted_authors)
         
         # Create permalink and paper filename
         title = ris_data_parsed[entry_id]['title'] or 'Untitled'

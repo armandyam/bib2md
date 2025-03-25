@@ -85,6 +85,22 @@ def parse_bib_file(bib_file_path: str) -> collections.defaultdict:
                 author_last_name = ' '.join(author.last_names)
                 author_list.append(author_first_name + ' ' + author_last_name)
             bib_data_parsed[entry]['authors_list'] = ', '.join(author_list)
+        elif 'author' in bib_data_parsed[entry]:
+            # Handle case where author is a string field
+            author_str = bib_data_parsed[entry]['author']
+            if ',' in author_str and ' and ' in author_str:
+                # Convert "Doe, James and Hamilton, Mark" format to "James Doe, Mark Hamilton"
+                authors = author_str.split(' and ')
+                converted_authors = []
+                for author in authors:
+                    if ',' in author:
+                        last_name, first_name = [part.strip() for part in author.split(',', 1)]
+                        converted_authors.append(f"{first_name} {last_name}")
+                    else:
+                        converted_authors.append(author.strip())
+                bib_data_parsed[entry]['authors_list'] = ', '.join(converted_authors)
+            else:
+                bib_data_parsed[entry]['authors_list'] = author_str
         
         # Special handling for arXiv
         if ('archiveprefix' in bib_data_parsed[entry] and 
