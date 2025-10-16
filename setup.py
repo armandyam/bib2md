@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='bib2md',
-    version='0.29',
+    version='0.30',
     packages=find_packages(),
     install_requires=[
         'pybtex',
