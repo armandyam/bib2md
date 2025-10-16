@@ -115,10 +115,11 @@ def parse_bib_file(bib_file_path: str) -> collections.defaultdict:
         bib_data_parsed[entry][
             'paper_file_name'] = f"{bib_data_parsed[entry].get('year', '2022')}-{bib_data_parsed[entry].get('title', '').replace(' ', '-')}.md"
         
-        # Ensure date is set
-        year = bib_data_parsed[entry].get('year', '2022')
-        month = bib_data_parsed[entry].get('month', '01')
-        bib_data_parsed[entry]['date'] = f"{year}-{month}-01"
+        # Ensure date is set - preserve original date if it exists, otherwise construct from year/month
+        if 'date' not in bib_data_parsed[entry] or not bib_data_parsed[entry]['date']:
+            year = bib_data_parsed[entry].get('year', '2022')
+            month = bib_data_parsed[entry].get('month', '01')
+            bib_data_parsed[entry]['date'] = f"{year}-{month}-01"
     
     return bib_data_parsed
 
@@ -528,8 +529,8 @@ def normalize_bibtex_entries(bibtex_data: collections.defaultdict) -> collection
         if 'title' not in entry:
             entry['title'] = f"Untitled Entry {entry_id}"
         
-        # Ensure date is present
-        if 'date' not in entry:
+        # Ensure date is present - preserve original date if it exists, otherwise construct from year/month
+        if 'date' not in entry or not entry['date']:
             year = entry.get('year', '2022')
             month = entry.get('month', '01')
             entry['date'] = f"{year}-{month}-01"
